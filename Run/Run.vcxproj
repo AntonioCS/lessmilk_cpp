@@ -19,7 +19,89 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AcsGE\Animation.cpp" />
+    <ClCompile Include="AcsGE\AssetManager.cpp" />
+    <ClCompile Include="AcsGE\ECS\Components\CollisionComponent.cpp" />
+    <ClCompile Include="AcsGE\ECS\Components\PositionComponent.cpp" />
+    <ClCompile Include="AcsGE\ECS\Components\RenderableComponent.cpp" />
+    <ClCompile Include="AcsGE\ECS\Components\Shapes\CircleComponent.cpp" />
+    <ClCompile Include="AcsGE\ECS\Components\SpriteComponent.cpp" />
+    <ClCompile Include="AcsGE\ECS\EntityManager.cpp" />
+    <ClCompile Include="AcsGE\ECS\SystemManager.cpp" />
+    <ClCompile Include="AcsGE\ECS\Systems\ColisionSystem.cpp" />
+    <ClCompile Include="AcsGE\ECS\Systems\RendererSystem.cpp" />
+    <ClCompile Include="AcsGE\EventData.cpp" />
+    <ClCompile Include="AcsGE\EventManager.cpp" />
+    <ClCompile Include="AcsGE\EventNameSpace.cpp" />
+    <ClCompile Include="AcsGE\Game.cpp" />
+    <ClCompile Include="AcsGE\GameState.cpp" />
+    <ClCompile Include="AcsGE\GameStateManager.cpp" />
+    <ClCompile Include="AcsGE\Messages.cpp" />
+    <ClCompile Include="AcsGE\Renderer.cpp" />
+    <ClCompile Include="AcsGE\Sprite.cpp" />
+    <ClCompile Include="AcsGE\Texture.cpp" />
+    <ClCompile Include="AcsGE\Uses\UsesRenderer.cpp" />
+    <ClCompile Include="AcsGE\Util\CollisionDetection.cpp" />
+    <ClCompile Include="AcsGE\Util\Color.cpp" />
+    <ClCompile Include="AcsGE\Util\ColorList.cpp" />
+    <ClCompile Include="AcsGE\Util\Drawer.cpp" />
+    <ClCompile Include="AcsGE\Util\Shapes\Circle.cpp" />
+    <ClCompile Include="AcsGE\Util\Shapes\Line.cpp" />
+    <ClCompile Include="AcsGE\Util\Shapes\Rectangle.cpp" />
+    <ClCompile Include="AcsGE\Util\Shapes\Triangle.cpp" />
+    <ClCompile Include="AcsGE\Util\Timer.cpp" />
+    <ClCompile Include="AcsGE\Util\Vector2D.cpp" />
+    <ClCompile Include="AcsGE\Window.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AcsGE\.git" />
+    <None Include="AcsGE\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AcsGE\Animation.h" />
+    <ClInclude Include="AcsGE\AssetManager.h" />
+    <ClInclude Include="AcsGE\ECS\Component.h" />
+    <ClInclude Include="AcsGE\ECS\Components\CollisionComponent.h" />
+    <ClInclude Include="AcsGE\ECS\Components\PositionComponent.h" />
+    <ClInclude Include="AcsGE\ECS\Components\RenderableComponent.h" />
+    <ClInclude Include="AcsGE\ECS\Components\Shapes\CircleComponent.h" />
+    <ClInclude Include="AcsGE\ECS\Components\SpriteComponent.h" />
+    <ClInclude Include="AcsGE\ECS\Entity.h" />
+    <ClInclude Include="AcsGE\ECS\EntityManager.h" />
+    <ClInclude Include="AcsGE\ECS\System.h" />
+    <ClInclude Include="AcsGE\ECS\SystemManager.h" />
+    <ClInclude Include="AcsGE\ECS\Systems\ColisionSystem.h" />
+    <ClInclude Include="AcsGE\ECS\Systems\RendererSystem.h" />
+    <ClInclude Include="AcsGE\EventData.h" />
+    <ClInclude Include="AcsGE\EventManager.h" />
+    <ClInclude Include="AcsGE\EventNameSpace.h" />
+    <ClInclude Include="AcsGE\Game.h" />
+    <ClInclude Include="AcsGE\GameState.h" />
+    <ClInclude Include="AcsGE\GameStateManager.h" />
+    <ClInclude Include="AcsGE\Math\Maths.h" />
+    <ClInclude Include="AcsGE\Messages.h" />
+    <ClInclude Include="AcsGE\Renderer.h" />
+    <ClInclude Include="AcsGE\Sprite.h" />
+    <ClInclude Include="AcsGE\Texture.h" />
+    <ClInclude Include="AcsGE\Uses\UsesRenderer.h" />
+    <ClInclude Include="AcsGE\Util\CollisionDetection.h" />
+    <ClInclude Include="AcsGE\Util\Color.h" />
+    <ClInclude Include="AcsGE\Util\ColorList.h" />
+    <ClInclude Include="AcsGE\Util\Container.h" />
+    <ClInclude Include="AcsGE\Util\Dimensions.h" />
+    <ClInclude Include="AcsGE\Util\Drawer.h" />
+    <ClInclude Include="AcsGE\Util\Mediator.h" />
+    <ClInclude Include="AcsGE\Util\SDL_io.h" />
+    <ClInclude Include="AcsGE\Util\Shapes\Circle.h" />
+    <ClInclude Include="AcsGE\Util\Shapes\Line.h" />
+    <ClInclude Include="AcsGE\Util\Shapes\Point.h" />
+    <ClInclude Include="AcsGE\Util\Shapes\Rectangle.h" />
+    <ClInclude Include="AcsGE\Util\Shapes\Shape.h" />
+    <ClInclude Include="AcsGE\Util\Shapes\Triangle.h" />
+    <ClInclude Include="AcsGE\Util\Timer.h" />
+    <ClInclude Include="AcsGE\Util\Vector2D.h" />
+    <ClInclude Include="AcsGE\Window.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
