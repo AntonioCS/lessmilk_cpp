@@ -71,8 +71,8 @@ void EnemySystem::init()
 
         setUpEnemy(getWindow(), e.getComponent<EnemyComponent>(), transComp);
 
-        transComp.center.x = transComp.size.x / 2;
-        transComp.center.y = transComp.size.y / 2;
+        transComp.center.x = transComp.size.w / 2;
+        transComp.center.y = transComp.size.h / 2;
     }
 
 }
