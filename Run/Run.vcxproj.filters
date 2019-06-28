@@ -1,17 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Game\Component\PlayerComponent.cpp" />
     <ClCompile Include="Game\System\PlayerSystem.cpp" />
-    <ClCompile Include="Game\Component\EnemyComponent.cpp" />
     <ClCompile Include="Game\System\EnemySystem.cpp" />
     <ClCompile Include="Game\System\SpriteAnimationSystem.cpp" />
-    <ClCompile Include="Game\Component\CollidableComponent2.cpp" />
     <ClCompile Include="Game\System\CollidableSystem2.cpp" />
     <ClCompile Include="Game\System\WorldSystem.cpp" />
     <ClCompile Include="Game\System\RenderSpriteSystem.cpp" />
-    <ClCompile Include="Game\System\FontSystem.cpp" />
     <ClCompile Include="vendor\AcsGE\ECS\Components\Shapes\CircleComponent.cpp" />
     <ClCompile Include="vendor\AcsGE\ECS\Components\CollisionComponent.cpp" />
     <ClCompile Include="vendor\AcsGE\ECS\Components\DimensionComponent.cpp" />
@@ -54,6 +49,19 @@
     <ClCompile Include="vendor\AcsGE\SpriteAnimationManager.cpp" />
     <ClCompile Include="vendor\AcsGE\Texture.cpp" />
     <ClCompile Include="vendor\AcsGE\Window.cpp" />
+    <ClCompile Include="vendor\AcsGE\Util\Size.cpp" />
+    <ClCompile Include="vendor\AcsGE\Sprite2.cpp" />
+    <ClCompile Include="Game\System\FontMapSystem.cpp" />
+    <ClCompile Include="vendor\AcsGE\FontAtlas.cpp" />
+    <ClCompile Include="Game\System\ScoreBoardSystem.cpp" />
+    <ClCompile Include="vendor\AcsGE\GroupManager.cpp" />
+    <ClCompile Include="Game\States\InitState.cpp" />
+    <ClCompile Include="main3.cpp" />
+    <ClCompile Include="Game\States\EndState.cpp" />
+    <ClCompile Include="vendor\AcsGE\Renderer\SpriteRenderer.cpp" />
+    <ClCompile Include="vendor\AcsGE\Writer.cpp" />
+    <ClCompile Include="vendor\AcsGE\Util\Util.cpp" />
+    <ClCompile Include="vendor\AcsGE\EventManager2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="vendor\AcsGE\.git" />
@@ -75,7 +83,6 @@
     <ClInclude Include="Game\System\WorldSystem.h" />
     <ClInclude Include="Game\Component\SpriteComponent2.h" />
     <ClInclude Include="Game\System\RenderSpriteSystem.h" />
-    <ClInclude Include="Game\System\FontSystem.h" />
     <ClInclude Include="vendor\AcsGE\ECS\Components\Shapes\CircleComponent.h" />
     <ClInclude Include="vendor\AcsGE\ECS\Components\CollisionComponent.h" />
     <ClInclude Include="vendor\AcsGE\ECS\Components\DimensionComponent.h" />
@@ -129,5 +136,24 @@
     <ClInclude Include="vendor\AcsGE\SpriteDrawData.h" />
     <ClInclude Include="vendor\AcsGE\Texture.h" />
     <ClInclude Include="vendor\AcsGE\Window.h" />
+    <ClInclude Include="vendor\AcsGE\Util\Size.h" />
+    <ClInclude Include="Game\Component\FontComponent.h" />
+    <ClInclude Include="Game\Component\ScoreBoardComponent.h" />
+    <ClInclude Include="vendor\AcsGE\Sprite2.h" />
+    <ClInclude Include="Game\Component\FontMapComponent.h" />
+    <ClInclude Include="Game\System\FontMapSystem.h" />
+    <ClInclude Include="vendor\AcsGE\FontAtlas.h" />
+    <ClInclude Include="Game\System\ScoreBoardSystem.h" />
+    <ClInclude Include="vendor\AcsGE\GroupManager.h" />
+    <ClInclude Include="vendor\AcsGE\Util\MediatorMulti.h" />
+    <ClInclude Include="Game\States\InitState.h" />
+    <ClInclude Include="Game\States\EndState.h" />
+    <ClInclude Include="vendor\AcsGE\Renderer\SpriteRenderer.h" />
+    <ClInclude Include="vendor\AcsGE\Writer.h" />
+    <ClInclude Include="vendor\AcsGE\GameStateData.h" />
+    <ClInclude Include="vendor\AcsGE\Util\Util.h" />
+    <ClInclude Include="vendor\AcsGE\Util\MediatorMultiTemplate.h" />
+    <ClInclude Include="vendor\AcsGE\EventManager2.h" />
+    <ClInclude Include="vendor\AcsGE\PlatformEventManagerAbstract.h" />
   </ItemGroup>
 </Project>

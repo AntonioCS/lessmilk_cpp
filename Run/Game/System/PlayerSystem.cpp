@@ -1,5 +1,5 @@
 ﻿#include "PlayerSystem.h"
-#include "../Component/PlayerComponent.h"
+
 
 
 #include <AcsGE/ECS/EntityManager.h>
@@ -9,9 +9,13 @@
 #include <AcsGE/KeyboardManager.h>
 #include <AcsGE/Util/Vector2D.h>
 #include <AcsGE/ECS/Components/SpriteAnimationComponent2.h>
+#include "../Component/PlayerComponent.h"
 #include "../Component/CollidableComponent2.h"
 #include <iostream>
 #include "../Component/TransformationComponent.h"
+#include "AcsGE/GameState.h"
+#include "AcsGE/GameStateManager.h"
+#include "../States/EndState.h"
 
 
 void PlayerSystem::init()
@@ -28,7 +32,9 @@ void PlayerSystem::update(std::chrono::milliseconds ts)
 
 
     auto &col = m_player->getComponent<CollidableComponent2>();
+
     if (col.hasCollided) {
+        m_hasCollided = true;
         std::cout << "COLISAO\n";
     }
 
@@ -67,4 +73,17 @@ void PlayerSystem::update(std::chrono::milliseconds ts)
 
 void PlayerSystem::render()
 {
+}
+
+void PlayerSystem::postRender()
+{
+    if (m_hasCollided) {
+        m_hasCollided = false;
+        std::cout << "ENTREI AQUI FDZ\n";
+
+        getGameState()
+            ->getGameStateManager()
+            ->changeState<EndState>()
+        ;
+    }
 }

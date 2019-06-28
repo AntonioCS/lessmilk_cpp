@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "../../AcsGE/ECS/System.h"
+#include <AcsGE/ECS/System.h>
 
 class RenderSpriteSystem : public AcsGameEngine::ECS::System
 {

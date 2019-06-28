@@ -3,8 +3,6 @@
 #include <AcsGE/ECS/EntityManager.h>
 #include <AcsGE/ECS/Entity.h>
 #include <AcsGE/ECS/Components/SpriteAnimationComponent2.h>
-#include <AcsGE/ECS/Components/PositionComponent.h>
-#include <AcsGE/KeyboardManager.h>
 #include <AcsGE/Util/Vector2D.h>
 #include "../Component/SpriteComponent2.h"
 
@@ -34,5 +32,4 @@ void SpriteAnimationSystem::update(std::chrono::milliseconds timeStep)
 
 void SpriteAnimationSystem::render()
 {
-
 }

@@ -18,6 +18,7 @@
 #include <AcsGE/Util/Timer.h>
 #include "AcsGE/Util/ColorList.h"
 #include <AcsGE/Util/Vector2D.h>
+#include <AcsGE/Util/Size.h>
 
 #include <AcsGE/ECS/EntityManager.h>
 
@@ -47,11 +48,12 @@
 #include "Game/Component/WorldPartComponent.h"
 #include "Game/Component/SpriteComponent2.h"
 #include "Game/System/WorldSystem.h"
-
-float operator*(float a, std::chrono::milliseconds b)
-{
-    return a * (static_cast<float>(b.count()) / 1000);
-}
+#include "Game/Component/FontComponent.h"
+#include "Game/Component/ScoreBoardComponent.h"
+#include "Game/System/FontSystem.h"
+#include "Game/Component/FontMapComponent.h"
+#include "Game/System/FontMapSystem.h"
+#include "Game/System/ScoreBoardSystem.h"
 
 int main(int argc, char** argv)
 {
@@ -73,7 +75,7 @@ int main(int argc, char** argv)
     using AcsGameEngine::ECS::RenderableComponent;
 
     using AcsGameEngine::Util::Vector2D;
-    using AcsGameEngine::Util::Dimensions;
+    using AcsGameEngine::Util::Size;
 
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
@@ -89,301 +91,303 @@ int main(int argc, char** argv)
 
     if (TTF_Init() == -1) {
         std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << '\n';
+
         return 1;
     }
 
-    //https://gamedev.stackexchange.com/questions/93225/sdl2-jagged-staircase-edges
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
-
-    constexpr int windowWidth{ 550 };
-    constexpr int windowHeight{ 550 };
-
-    const Vector2D worldOffset{ 50, 50 };
-    const Vector2D worldSize{ 350, 350 };
-
-    Window window("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight);
-    Renderer renderer(window);
-    EventManager eventManager;
-    AssetManager assetManager(&renderer);
-    EntityManager entityManager;
-    AcsGameEngine::ECS::SystemManager systemManager(&renderer, &window, &entityManager);
-    auto &km = KeyboardManager::getInstance();
-
-    systemManager.addSystem<SpriteAnimationSystem>();
-    systemManager.addSystem<PlayerSystem>();
-    systemManager.addSystem<EnemySystem>();
-    systemManager.addSystem<CollidableSystem2>();
-    systemManager.addSystem<WorldSystem>();
-    systemManager.addSystem<RenderSpriteSystem>();
-
-    //Create world entity
+    //NOTE - IMPORTANT
+    //The code needs to be in it's own scope so that the SDL shutdown functions don't affect the code
+    //I was getting memory issues with the fonts due to the TTF_Quit being called before the cleanup function
     {
-        auto& e = entityManager.makeEntity();
-        e.addComponent<WorldComponent>();
-        auto &transform = e.addComponent<TransformationComponent>();
-        transform.position = worldOffset;
-        transform.size = worldSize;
-    }
+        //TTF_Font * font = TTF_OpenFont("Game/assets/fonts/helvica_HELR45W.ttf", 25);
+        //AcsGameEngine::Font fo(font);
+        //std::cout << "The font max height is: " << TTF_FontHeight(font) << '\n';
 
-    using namespace std::chrono_literals;
+        //https://gamedev.stackexchange.com/questions/93225/sdl2-jagged-staircase-edges
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-    const std::vector<std::pair<std::string, SDL_Rect>> playerMoves
-    {
+        constexpr int windowWidth{ 550 };
+        constexpr int windowHeight{ 550 };
+
+        const Vector2D worldOffset{ 50, 50 };
+        const Size worldSize{ 350, 350 };
+
+        Window window("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, windowWidth, windowHeight);
+        Renderer renderer(window);
+        EventManager eventManager;
+        AssetManager assetManager(&renderer);
+        EntityManager entityManager;
+        AcsGameEngine::ECS::SystemManager systemManager(&renderer, &window, &entityManager);
+        auto &km = KeyboardManager::getInstance();
+
+        systemManager.addSystem<SpriteAnimationSystem>();
+        systemManager.addSystem<PlayerSystem>();
+        systemManager.addSystem<EnemySystem>();
+        systemManager.addSystem<CollidableSystem2>();
+        systemManager.addSystem<WorldSystem>();
+        systemManager.addSystem<ScoreBoardSystem>();
+        systemManager.addSystem<FontSystem>();
+        systemManager.addSystem<FontMapSystem>();
+        systemManager.addSystem<RenderSpriteSystem>();
+
+        //Create world entity
         {
-            {"playerMoveDown1", {0, 0, 20, 23}},
-            {"playerMoveDown2", {20, 0, 20, 23}},
-            {"playerMoveRight1", {0, 25, 20, 23}},
-            {"playerMoveRight2", {20, 25, 20, 23}},
-            {"playerMoveUp1", {0, 49, 20, 23}},
-            {"playerMoveUp2", {20, 49, 20, 23}},
-            {"playerMoveLeft1", {0, 73, 20, 23}},
-            {"playerMoveLeft2", {20, 73, 20, 23}},
+            auto& e = entityManager.makeEntity();
+            e.addComponent<WorldComponent>();
+            auto &transform = e.addComponent<TransformationComponent>();
+            transform.position = worldOffset;
+            transform.size = worldSize;
         }
-    };
-
-    const Vector2D enemy1WidthHeight{ 32 , 36 };
-    const Vector2D enemy2WidthHeight{ 28, 40 };
-
-    const std::vector<std::pair<std::string, SDL_Rect>> enemy1Moves
-    {
+ 
         {
-            {"enemy1Move1", {0, 0, enemy1WidthHeight.getXint(), enemy1WidthHeight.getYint()}},
-            {"enemy1Move2", {32, 0, enemy1WidthHeight.getXint(), enemy1WidthHeight.getYint()}}
+            ///*
+            auto& e = entityManager.makeEntity();
+            e.addComponent<ScoreBoardComponent>();
+            e.addComponent<SpriteComponent2>();
+            auto &transComp = e.addComponent<TransformationComponent>();
+            transComp.position = { 10, 10 };
+            
+
+            //auto &fontComp = e.addComponent<FontComponent>();
+            //fontComp.font = assetManager.loadFont("helvica", "Game/assets/fonts/helvica_HELR45W.ttf", 25);
+            //fontComp.text = "score: N";
+
+            assetManager.loadFontMap("arial20", "Game/assets/fonts/Arial/arial_20.png", "Game/assets/fonts/Arial/arial_20.fnt");
+            auto fontInfo = assetManager.getFontMap("arial20");
+
+            if (fontInfo) {
+                auto &fontMap = e.addComponent<FontMapComponent>();
+                fontMap.color = AcsGameEngine::Util::ColorList::red;
+                fontMap.text = "score: %d";
+                fontMap.fontMapTexture = fontInfo->first;
+                fontMap.fontAtlas = fontInfo->second;
+                fontMap.size = 20;
+            }
+            else {
+                throw std::logic_error{ "Unable to get map" };
+            }
+
+           //*/
         }
-    };
 
-    const std::vector<std::pair<std::string, SDL_Rect>> enemy2Moves
-    {
+        using namespace std::chrono_literals;
+
+        const std::vector<std::pair<std::string, SDL_Rect>> playerMoves
         {
-            {"enemy2Move1", {0, 0, enemy2WidthHeight.getXint(), enemy2WidthHeight.getYint()}},
-            {"enemy2Move2", {28, 0, enemy2WidthHeight.getXint(), enemy2WidthHeight.getYint()}}
-        }
-    };
-
-
-    //enemy1Moves[0].get(0).["enemy1Move1"]
-    assetManager.makeTexture("player", "Game/assets/sprites/player.png");
-    assetManager.makeTexture("enemy1", "Game/assets/sprites/enemy1.png");
-    assetManager.makeTexture("enemy2", "Game/assets/sprites/enemy2.png");
-
-    assetManager.makeSprites("player", playerMoves);
-    assetManager.makeSprites("enemy1", enemy1Moves);
-    assetManager.makeSprites("enemy2", enemy2Moves);
-    //Player creation
-    {
-        using AcsGameEngine::SpriteAnimation2;
-        auto& playerEntity = entityManager.makeEntity();
-
-        constexpr auto delay = 150ms;       
-        const Vector2D playerPos{ 40, 40 };
-        const Vector2D playerSize{ 20, 23 };        
-
-        playerEntity.addComponent<PlayerComponent>();
-        playerEntity.addComponent<SpriteComponent2>();
-        playerEntity.addComponent<RenderableComponent>();
-        playerEntity.addComponent<SpriteAnimationComponent2>()
-                .spriteAnimationManager
-                    .add(
-                        "moveDown",
-                        SpriteAnimation2{}
-                        .addFrame(assetManager.getSprite("playerMoveDown1"), delay)
-                        .addFrame(assetManager.getSprite("playerMoveDown2"), delay)
-                    )
-                    .add(
-                        "moveUp",
-                        SpriteAnimation2{}
-                        .addFrame(assetManager.getSprite("playerMoveUp1"), delay)
-                        .addFrame(assetManager.getSprite("playerMoveUp2"), delay)
-                    )
-                    .add(
-                        "moveLeft",
-                        SpriteAnimation2{}
-                        .addFrame(assetManager.getSprite("playerMoveLeft1"), delay)
-                        .addFrame(assetManager.getSprite("playerMoveLeft2"), delay)
-                    )
-                    .add(
-                        "moveRight",
-                        SpriteAnimation2{}
-                        .addFrame(assetManager.getSprite("playerMoveRight1"), delay)
-                        .addFrame(assetManager.getSprite("playerMoveRight2"), delay)
-                    )
-                    .setDefaultAnimation("moveLeft");
-        playerEntity.addComponent<CollidableComponent2>()
-            .isDebug = true;
-        auto &transComp = playerEntity.addComponent<TransformationComponent>();
-        transComp.position = playerPos;
-        transComp.size = playerSize;
-    }
-
-    bool is_running{true};
-
-    if (window.isHidden()) {
-        window.showWindow();
-    }
-
-    eventManager.onQuit(
-        [&is_running](SDL_Event& event)
-        {
-            is_running = false;
-        }
-    );
-
-    const AcsGameEngine::Color background{"#34495E"};
-
-    //Enemy creation
-    {
-        using AcsGameEngine::SpriteAnimation2;
-        const auto delay{125ms};
-
-        auto enemy1Animation = SpriteAnimation2{}
-                               .addFrame(assetManager.getSprite("enemy1Move1"), delay)
-                               .addFrame(assetManager.getSprite("enemy1Move2"), delay);
-
-        auto enemy2Animation = SpriteAnimation2{}
-                               .addFrame(assetManager.getSprite("enemy2Move1"), delay)
-                               .addFrame(assetManager.getSprite("enemy2Move2"), delay);
-
-        //std::random_device rd; //Will be used to obtain a seed for the random number engine
-        //std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
-        //std::uniform_int_distribution<> dis(1, 350);
-
-        //const auto makeEnemy = [&entityManager, &dis, &gen](int quantity, SpriteAnimation2& animation, int w, int h)
-        const auto makeEnemy = [&entityManager](int quantity, SpriteAnimation2& animation, const Vector2D &wh)
-        {
-            const auto x = 0;
-            const auto y = 0;
-
-            while (quantity--) {
-                auto& e = entityManager.makeEntity();
-
-                e.addComponent<EnemyComponent>();
-                e.addComponent<WorldPartComponent>();
-                e.addComponent<SpriteComponent2>();
-                e.addComponent<RenderableComponent>();
-                e.addComponent<SpriteAnimationComponent2>()
-                    .spriteAnimationManager
-                    .add("moving", animation)
-                    .play();                
-                //@TODO Refactor this, all the need values are in the TransformationComponent
-                e.addComponent<CollidableComponent2>().isDebug = true;
-                auto &transform = e.addComponent<TransformationComponent>();
-                transform.position = { x, y };
-                transform.size = wh;
+            {
+                {"playerMoveDown1", {0, 0, 20, 23}},
+                {"playerMoveDown2", {20, 0, 20, 23}},
+                {"playerMoveRight1", {0, 25, 20, 23}},
+                {"playerMoveRight2", {20, 25, 20, 23}},
+                {"playerMoveUp1", {0, 49, 20, 23}},
+                {"playerMoveUp2", {20, 49, 20, 23}},
+                {"playerMoveLeft1", {0, 73, 20, 23}},
+                {"playerMoveLeft2", {20, 73, 20, 23}},
             }
         };
 
-        makeEnemy(20, enemy1Animation, enemy1WidthHeight);
-        makeEnemy(17, enemy2Animation, enemy2WidthHeight);
-    }
+        const Size enemy1WidthHeight{ 32 , 36 };
+        const Size enemy2WidthHeight{ 28, 40 };
 
-    eventManager.onKeyDown([&km](SDL_Event& e)
-    {
-        km.onKeyDown(e);
-    });
-
-    eventManager.onKeyUp([&km](SDL_Event& e)
-    {
-        km.onKeyUp(e);
-    });
-
-    eventManager.onEvent(SDL_MOUSEBUTTONDOWN, [](SDL_Event &event)
-    {
-        
-    });
-
-    eventManager.onEvent(SDL_MOUSEBUTTONUP, [](SDL_Event &event)
-    {
-        
-    });
-
-    eventManager.onEvent(SDL_MOUSEMOTION, [](SDL_Event &event)
-    {
-        
-    });
-
-    eventManager.onEvent(SDL_MOUSEWHEEL, [](SDL_Event &event)
-    {
-        
-    });
-
-
-
-
-
-
-
-    
-    using clock = std::chrono::high_resolution_clock;
-    using std::chrono::milliseconds;
-
-    auto& player = entityManager.findOneByComponent<PlayerComponent>();
-
-    const auto timeStep{16ms};
-    AcsGameEngine::Util::Timer::ms accumulator{0ms};
-    AcsGameEngine::Util::Timer timer;
-
-    timer.start();
-
-    AcsGameEngine::Util::Drawer drawer{renderer};
-
-    systemManager.init();
-
-    while (is_running) {
-        accumulator += timer.elapsed();
-        timer.reset();
-
-        eventManager.processEvents();
-
-        while (accumulator >= timeStep) {
-            systemManager.update(timeStep);
-
-            accumulator -= timeStep;
-
-            if (accumulator >= 250ms) {
-                accumulator = 0ms;
+        const std::vector<std::pair<std::string, SDL_Rect>> enemy1Moves
+        {
+            {
+                {"enemy1Move1", {0, 0, enemy1WidthHeight.getWint(), enemy1WidthHeight.getHint()}},
+                {"enemy1Move2", {32, 0, enemy1WidthHeight.getWint(), enemy1WidthHeight.getHint()}}
             }
+        };
+
+        const std::vector<std::pair<std::string, SDL_Rect>> enemy2Moves
+        {
+            {
+                {"enemy2Move1", {0, 0, enemy2WidthHeight.getWint(), enemy2WidthHeight.getHint()}},
+                {"enemy2Move2", {28, 0, enemy2WidthHeight.getWint(), enemy2WidthHeight.getHint()}}
+            }
+        };
+
+
+        //enemy1Moves[0].get(0).["enemy1Move1"]
+        assetManager.makeTexture("player", "Game/assets/sprites/player.png");
+        assetManager.makeTexture("enemy1", "Game/assets/sprites/enemy1.png");
+        assetManager.makeTexture("enemy2", "Game/assets/sprites/enemy2.png");
+
+        assetManager.makeSprites("player", playerMoves);
+        assetManager.makeSprites("enemy1", enemy1Moves);
+        assetManager.makeSprites("enemy2", enemy2Moves);
+        //Player creation
+        {
+            using AcsGameEngine::SpriteAnimation2;
+            auto& playerEntity = entityManager.makeEntity();
+
+            constexpr auto delay = 150ms;
+            const Vector2D playerPos{ 40, 40 };
+            const Size playerSize{ 20, 23 };
+
+            playerEntity.addComponent<PlayerComponent>();
+            playerEntity.addComponent<SpriteComponent2>();
+            playerEntity.addComponent<RenderableComponent>();
+            playerEntity.addComponent<SpriteAnimationComponent2>()
+                .spriteAnimationManager
+                .add(
+                    "moveDown",
+                    SpriteAnimation2{}
+                    .addFrame(assetManager.getSprite("playerMoveDown1"), delay)
+                    .addFrame(assetManager.getSprite("playerMoveDown2"), delay)
+                )
+                .add(
+                    "moveUp",
+                    SpriteAnimation2{}
+                    .addFrame(assetManager.getSprite("playerMoveUp1"), delay)
+                    .addFrame(assetManager.getSprite("playerMoveUp2"), delay)
+                )
+                .add(
+                    "moveLeft",
+                    SpriteAnimation2{}
+                    .addFrame(assetManager.getSprite("playerMoveLeft1"), delay)
+                    .addFrame(assetManager.getSprite("playerMoveLeft2"), delay)
+                )
+                .add(
+                    "moveRight",
+                    SpriteAnimation2{}
+                    .addFrame(assetManager.getSprite("playerMoveRight1"), delay)
+                    .addFrame(assetManager.getSprite("playerMoveRight2"), delay)
+                )
+                .setDefaultAnimation("moveLeft");
+            playerEntity.addComponent<CollidableComponent2>()
+                .isDebug = true;
+            auto &transComp = playerEntity.addComponent<TransformationComponent>();
+            transComp.position = playerPos;
+            transComp.size = playerSize;
         }
 
-        renderer.clear(background);
-        //auto items = entityManager.findByComponent<PositionComponent, SpriteAnimationComponent2>();
-        
-        systemManager.render();
+        bool is_running{ true };
 
-        /*
-        for (const auto ref : items) {
-            auto& e = ref.get();
+        if (window.isHidden()) {
+            window.showWindow();
+        }
 
-            auto const pos = e.getComponent<PositionComponent>().getPosition();
-            AcsGameEngine::Sprite* sprite{nullptr};
+        eventManager.onQuit(
+            [&is_running](SDL_Event& event)
+        {
+            is_running = false;
+            return true;
+        }
+        );
 
-            //if (e.hasComponent<SpriteComponent>()) {
-            //  sprite = e.getComponent<SpriteComponent>().getSprite();                
-            //}
-            if (e.hasComponent<SpriteAnimationComponent2>()){
-                sprite = e.getComponent<SpriteAnimationComponent2>().spriteAnimationManager.current();
-            }
-            /*
-            if (e.hasComponent<CollidableComponent>())
+        //Enemy creation
+        {
+            using AcsGameEngine::SpriteAnimation2;
+            const auto delay{ 125ms };
+
+            auto enemy1Animation = SpriteAnimation2{}
+                .addFrame(assetManager.getSprite("enemy1Move1"), delay)
+                .addFrame(assetManager.getSprite("enemy1Move2"), delay);
+
+            auto enemy2Animation = SpriteAnimation2{}
+                .addFrame(assetManager.getSprite("enemy2Move1"), delay)
+                .addFrame(assetManager.getSprite("enemy2Move2"), delay);
+
+            //std::random_device rd; //Will be used to obtain a seed for the random number engine
+            //std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+            //std::uniform_int_distribution<> dis(1, 350);
+
+            //const auto makeEnemy = [&entityManager, &dis, &gen](int quantity, SpriteAnimation2& animation, int w, int h)
+            const auto makeEnemy = [&entityManager](int quantity, SpriteAnimation2& animation, const Size &wh)
             {
-                auto c = e.getComponent<CollidableComponent>();
-                if (c.drawRect())
-                {
-                    renderer.drawColor(AcsGameEngine::Util::ColorList::red);
-                    drawer.DrawRect(c.getRect());
+                const auto x = 0;
+                const auto y = 0;
 
-                    //renderer.drawLine(c.getRect().origin.x, c.getRect().origin.y, c.getRect().)
+                while (quantity--) {
+                    auto& e = entityManager.makeEntity();
 
-                    //renderer.drawRect(c.getRect());
+                    e.addComponent<EnemyComponent>();
+                    e.addComponent<WorldPartComponent>();
+                    e.addComponent<SpriteComponent2>();
+                    e.addComponent<RenderableComponent>();
+                    e.addComponent<SpriteAnimationComponent2>()
+                        .spriteAnimationManager
+                        .add("moving", animation)
+                        .play();
+                    //@TODO Refactor this, all the need values are in the TransformationComponent
+                    e.addComponent<CollidableComponent2>().isDebug = true;
+                    auto &transform = e.addComponent<TransformationComponent>();
+                    transform.position = { x, y };
+                    transform.size = wh;
                 }
-            }*/
-        /*
-            if (sprite) {
-                sprite->setDestinationXY(pos.x, pos.y);
-                renderer.drawSprite(sprite);
-            }
-        }*/
+            };
 
-        renderer.present();
+            makeEnemy(5, enemy1Animation, enemy1WidthHeight);
+            makeEnemy(5, enemy2Animation, enemy2WidthHeight);
+        }
+
+        eventManager.onKeyDown([&km](SDL_Event& e)
+        {
+            km.onKeyDown(e);
+            return true;
+        });
+
+        eventManager.onKeyUp([&km](SDL_Event& e)
+        {
+            km.onKeyUp(e);
+            return true;
+        });
+
+        eventManager.onEvent(SDL_MOUSEBUTTONDOWN, [](SDL_Event &event)
+        {
+            return true;
+        });
+
+        eventManager.onEvent(SDL_MOUSEBUTTONUP, [](SDL_Event &event)
+        {
+            return true;
+        });
+
+        eventManager.onEvent(SDL_MOUSEMOTION, [](SDL_Event &event)
+        {
+            return true;
+        });
+
+        eventManager.onEvent(SDL_MOUSEWHEEL, [](SDL_Event &event)
+        {
+            return true;
+        });
+
+
+        const AcsGameEngine::Color background{ "#34495E" };
+
+        using clock = std::chrono::high_resolution_clock;
+        using std::chrono::milliseconds;
+
+        const auto timeStep{ 16ms };
+        AcsGameEngine::Util::Timer::ms accumulator{ 0ms };
+        AcsGameEngine::Util::Timer timer;
+
+        timer.start();
+
+        systemManager.init();
+
+        while (is_running) {
+            accumulator += timer.elapsed();
+            timer.reset();
+
+            eventManager.processEvents();
+
+            while (accumulator >= timeStep) {
+                systemManager.update(timeStep);
+
+                accumulator -= timeStep;
+
+                if (accumulator >= 250ms) {
+                    accumulator = 0ms;
+                }
+            }            
+
+            renderer.clear(background);
+
+            systemManager.render();
+
+            renderer.present();
+        }
     }
 
     TTF_Quit();
